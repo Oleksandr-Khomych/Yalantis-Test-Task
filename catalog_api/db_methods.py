@@ -18,3 +18,11 @@ def get_all_course():
 def get_course_by_id(id_):
     return db.session.query(Course).filter(Course.id == id_).first()
 
+
+def course_exists(id_):
+    return bool(db.session.query(Course).filter(Course.id == id_).count())
+
+
+def delete_course_by_id(id_):
+    db.session.query(Course).filter(Course.id == id_).delete()
+    db.session.commit()

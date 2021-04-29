@@ -43,8 +43,7 @@ class Catalog(Resource):
         courses = db_methods.get_all_course()
         courses_list = []
         for course in courses:
-            courses_list.append({'id': course.id, 'name': course.name, 'start_date': str(course.start_date),
-                                 'end_date': str(course.end_date), 'lectures_count': course.lectures_count})
+            courses_list.append({'id': course.id, 'name': course.name, 'lectures_count': course.lectures_count})
         return {"message": {"courses": courses_list}}, 200
 
 
@@ -58,3 +57,9 @@ class Course(Resource):
         else:
             return {"message": {"course": f"Course with id={course_id} not found"}}, 400
 
+    def delete(self, course_id):
+        if db_methods.course_exists(course_id):
+            db_methods.delete_course_by_id(course_id)
+            return {"message": {"delete": f"Course with id={course_id} successfully deleted!"}}, 200
+        else:
+            return {"message": {"delete": f"Course with id={course_id} not found!"}}, 400
