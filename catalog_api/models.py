@@ -10,4 +10,5 @@ class Course(db.Model):
     lectures_count = db.Column(db.Integer)
 
     def __repr__(self):
-        return f'<Course(id={self.id}, name={self.name}, start_date={self.start_date}, end_date={self.end_date})>'
+        return f'<Course(id={self.id}, name={self.name}, start_date={self.start_date}, end_date={self.end_date}, ' \
+               f'lectures_count={self.lectures_count})>'

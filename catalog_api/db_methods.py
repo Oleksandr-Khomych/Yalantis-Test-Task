@@ -26,3 +26,8 @@ def course_exists(id_):
 def delete_course_by_id(id_):
     db.session.query(Course).filter(Course.id == id_).delete()
     db.session.commit()
+
+
+def update_course_info(id_, update_data):
+    db.session.query(Course).filter(Course.id == id_).update(update_data)
+    db.session.commit()

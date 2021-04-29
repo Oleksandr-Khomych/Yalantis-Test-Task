@@ -63,3 +63,38 @@ class Course(Resource):
             return {"message": {"delete": f"Course with id={course_id} successfully deleted!"}}, 200
         else:
             return {"message": {"delete": f"Course with id={course_id} not found!"}}, 400
+
+    def patch(self, course_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('name', type=str)
+        parser.add_argument('start_date', type=str,
+                            help='The date must be in the format: "%Y-%m-%d"\n Example: "2021-04-20"')
+        parser.add_argument('end_date', type=str,
+                            help='The date must be in the format: "%Y-%m-%d"\n Example: "2021-04-20"')
+        parser.add_argument('lectures_count', type=int)
+        args = parser.parse_args(strict=True)
+        update_data = {}
+        if args['name']:
+            update_data['name'] = args['name']
+        if args['lectures_count']:
+            update_data['lectures_count'] = args['lectures_count']
+
+        if args['start_date']:
+            try:
+                start_date = transfer_date(args['start_date'])
+                update_data['start_date'] = start_date
+            except ValueError as e:
+                return {"message": {
+                    "start_date": f'{e}\nThe date must be in the format: "%Y-%m-%d"\n Example: "2021-04-20"'}}, 400
+        if args['end_date']:
+            try:
+                end_date = transfer_date(args['end_date'])
+                update_data['end_date'] = end_date
+            except ValueError as e:
+                return {"message": {
+                    "end_date": f'{e}\nThe date must be in the format: "%Y-%m-%d"\n Example: "2021-04-20"'}}, 400
+        db_methods.update_course_info(course_id, update_data)
+        course = db_methods.get_course_by_id(course_id)
+        course_info = {'id': course.id, 'name': course.name, 'start_date': str(course.start_date),
+                       'end_date': str(course.end_date), 'lectures_count': course.lectures_count}
+        return {"message": {"course": course_info}}, 200
