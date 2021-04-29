@@ -9,3 +9,12 @@ def add_course(name: str, start_date: date, end_date: date, lectures_count: int)
     db.session.add(new_course)
     db.session.commit()
     return new_course.id
+
+
+def get_all_course():
+    return db.session.query(Course).all()
+
+
+def get_course_by_id(id_):
+    return db.session.query(Course).filter(Course.id == id_).first()
+

@@ -1,4 +1,5 @@
 from flask_restful import Resource, reqparse
+
 import db_methods
 from app import app
 from utils import transfer_date
@@ -33,5 +34,27 @@ class CreateCourse(Resource):
             return {"message": {
                 "end_date": f'{e}\nThe date must be in the format: "%Y-%m-%d"\n Example: "2021-04-20"'}}, 400
 
-        id = db_methods.add_course(name, start_date, end_date, lectures_count)
-        return {"message": {'id': id, 'name': name, 'start_date': str(start_date), 'end_date': str(end_date)}}, 201
+        id_ = db_methods.add_course(name, start_date, end_date, lectures_count)
+        return {"message": {'id': id_, 'name': name, 'start_date': str(start_date), 'end_date': str(end_date)}}, 201
+
+
+class Catalog(Resource):
+    def get(self):
+        courses = db_methods.get_all_course()
+        courses_list = []
+        for course in courses:
+            courses_list.append({'id': course.id, 'name': course.name, 'start_date': str(course.start_date),
+                                 'end_date': str(course.end_date), 'lectures_count': course.lectures_count})
+        return {"message": {"courses": courses_list}}, 200
+
+
+class Course(Resource):
+    def get(self, course_id):
+        course = db_methods.get_course_by_id(course_id)
+        if course:
+            course_info = {'id': course.id, 'name': course.name, 'start_date': str(course.start_date),
+                           'end_date': str(course.end_date), 'lectures_count': course.lectures_count}
+            return {"message": {"course": course_info}}, 200
+        else:
+            return {"message": {"course": f"Course with id={course_id} not found"}}, 400
+
