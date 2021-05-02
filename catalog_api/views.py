@@ -2,40 +2,25 @@ from flask_restful import Resource, reqparse
 
 import db_methods
 from app import app
-from utils import transfer_date
+from utils import transfer_date, validate_lectures_count
 
 
 @app.route('/')
 def home():
-    return '<h1>Home page!</h1>'
+    return '<h1>Catalog Home page!</h1>'
 
 
 class CreateCourse(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str, required=True)
-        parser.add_argument('start_date', type=str,
-                            help='The date must be in the format: "%Y-%m-%d"\n Example: "2021-04-20"')
-        parser.add_argument('end_date', type=str,
-                            help='The date must be in the format: "%Y-%m-%d"\n Example: "2021-04-20"')
-        parser.add_argument('lectures_count', type=int, required=True)
+        parser.add_argument('start_date', type=transfer_date, required=True)
+        parser.add_argument('end_date', type=transfer_date, required=True)
+        parser.add_argument('lectures_count', type=validate_lectures_count, required=True)
         args = parser.parse_args(strict=True)
-        name = args['name']
-        lectures_count = args['lectures_count']
-
-        try:
-            start_date = transfer_date(args['start_date'])
-        except ValueError as e:
-            return {"message": {
-                "start_date": f'{e}\nThe date must be in the format: "%Y-%m-%d"\n Example: "2021-04-20"'}}, 400
-        try:
-            end_date = transfer_date(args['end_date'])
-        except ValueError as e:
-            return {"message": {
-                "end_date": f'{e}\nThe date must be in the format: "%Y-%m-%d"\n Example: "2021-04-20"'}}, 400
-
-        id_ = db_methods.add_course(name, start_date, end_date, lectures_count)
-        return {"message": {'id': id_, 'name': name, 'start_date': str(start_date), 'end_date': str(end_date)}}, 201
+        id_ = db_methods.add_course(args['name'], args['start_date'], args['end_date'], args['lectures_count'])
+        return {"message": {'id': id_, 'name': args['name'], 'start_date': str(args['start_date']),
+                            'end_date': str(args['end_date']), 'lectures_count': args['lectures_count']}}, 201
 
 
 class Catalog(Resource):
@@ -67,34 +52,34 @@ class Course(Resource):
     def patch(self, course_id):
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str)
-        parser.add_argument('start_date', type=str,
-                            help='The date must be in the format: "%Y-%m-%d"\n Example: "2021-04-20"')
-        parser.add_argument('end_date', type=str,
-                            help='The date must be in the format: "%Y-%m-%d"\n Example: "2021-04-20"')
-        parser.add_argument('lectures_count', type=int)
+        parser.add_argument('start_date', type=transfer_date)
+        parser.add_argument('end_date', type=transfer_date)
+        parser.add_argument('lectures_count', type=validate_lectures_count)
         args = parser.parse_args(strict=True)
         update_data = {}
-        if args['name']:
-            update_data['name'] = args['name']
-        if args['lectures_count']:
-            update_data['lectures_count'] = args['lectures_count']
-
-        if args['start_date']:
-            try:
-                start_date = transfer_date(args['start_date'])
-                update_data['start_date'] = start_date
-            except ValueError as e:
-                return {"message": {
-                    "start_date": f'{e}\nThe date must be in the format: "%Y-%m-%d"\n Example: "2021-04-20"'}}, 400
-        if args['end_date']:
-            try:
-                end_date = transfer_date(args['end_date'])
-                update_data['end_date'] = end_date
-            except ValueError as e:
-                return {"message": {
-                    "end_date": f'{e}\nThe date must be in the format: "%Y-%m-%d"\n Example: "2021-04-20"'}}, 400
+        for key, value in args.items():
+            if value:
+                update_data[key] = value
         db_methods.update_course_info(course_id, update_data)
         course = db_methods.get_course_by_id(course_id)
         course_info = {'id': course.id, 'name': course.name, 'start_date': str(course.start_date),
                        'end_date': str(course.end_date), 'lectures_count': course.lectures_count}
         return {"message": {"course": course_info}}, 200
+
+
+class FindCourse(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('name', type=str, required=True)
+        parser.add_argument('start_date[gte]', type=transfer_date)
+        parser.add_argument('start_date[lte]', type=transfer_date)
+        parser.add_argument('end_date[gte]', type=transfer_date)
+        parser.add_argument('end_date[lte]', type=transfer_date)
+
+        args = parser.parse_args(strict=True)
+        courses = db_methods.find_courses(args)
+        courses_list = []
+        for course in courses:
+            courses_list.append({'id': course.id, 'name': course.name, 'start_date': str(course.start_date),
+                                 'end_date': str(course.end_date), 'lectures_count': course.lectures_count})
+        return {"message": {"courses": courses_list}}

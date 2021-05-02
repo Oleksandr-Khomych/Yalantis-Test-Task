@@ -8,6 +8,7 @@ import views
 api.add_resource(views.CreateCourse, '/create')
 api.add_resource(views.Catalog, '/catalog')
 api.add_resource(views.Course, '/course/<string:course_id>')
+api.add_resource(views.FindCourse, '/search')
 
 
 if __name__ == '__main__':
