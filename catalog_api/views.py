@@ -2,12 +2,12 @@ from flask_restful import Resource, reqparse
 
 import db_methods
 from app import app
-from utils import transfer_date, validate_lectures_count
+from utils import transfer_date, validate_lectures_count, abort_if_course_doesnt_exist
 
 
 @app.route('/')
 def home():
-    return '<h1>Catalog Home page!</h1>'
+    return '<h1>CatalogAPI Home page!</h1>'
 
 
 class CreateCourse(Resource):
@@ -43,13 +43,12 @@ class Course(Resource):
             return {"message": {"course": f"Course with id={course_id} not found"}}, 400
 
     def delete(self, course_id):
-        if db_methods.course_exists(course_id):
-            db_methods.delete_course_by_id(course_id)
-            return {"message": {"delete": f"Course with id={course_id} successfully deleted!"}}, 200
-        else:
-            return {"message": {"delete": f"Course with id={course_id} not found!"}}, 400
+        abort_if_course_doesnt_exist(course_id)
+        db_methods.delete_course_by_id(course_id)
+        return {"message": {"delete": f"Course with id={course_id} successfully deleted!"}}, 200
 
     def patch(self, course_id):
+        abort_if_course_doesnt_exist(course_id)
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str)
         parser.add_argument('start_date', type=transfer_date)
@@ -60,6 +59,8 @@ class Course(Resource):
         for key, value in args.items():
             if value:
                 update_data[key] = value
+        if len(update_data) == 0:
+            return {"message": {"patch": "No arguments passed"}}, 400
         db_methods.update_course_info(course_id, update_data)
         course = db_methods.get_course_by_id(course_id)
         course_info = {'id': course.id, 'name': course.name, 'start_date': str(course.start_date),
