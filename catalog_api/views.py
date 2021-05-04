@@ -1,13 +1,12 @@
 from flask_restful import Resource, reqparse
 
-import db_methods
-from app import app
-from utils import transfer_date, validate_lectures_count, abort_if_course_doesnt_exist
+from catalog_api import db_methods
+from catalog_api.utils import transfer_date, validate_lectures_count, abort_if_course_doesnt_exist
 
 
-@app.route('/')
-def home():
-    return '<h1>CatalogAPI Home page!</h1>'
+class Home(Resource):
+    def get(self):
+        return {"message": "CatalogAPI home page"}
 
 
 class CreateCourse(Resource):

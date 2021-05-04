@@ -1,7 +1,7 @@
 from datetime import date
 
-from app import db
-from models import Course
+from catalog_api.app import db
+from catalog_api.models import Course
 
 
 def add_course(name: str, start_date: date, end_date: date, lectures_count: int) -> int:

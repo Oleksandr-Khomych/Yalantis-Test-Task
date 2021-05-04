@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 
-from config import Configuration
+from catalog_api.config import Configuration
 
 
 app = Flask(__name__)
