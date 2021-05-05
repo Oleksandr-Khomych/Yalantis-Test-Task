@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from app import app, api
-from catalog_api.models import db
-from catalog_api import views
-
-
-api.add_resource(views.CreateCourse, '/create')
-api.add_resource(views.Catalog, '/catalog')
-api.add_resource(views.Course, '/course/<string:course_id>')
-api.add_resource(views.FindCourse, '/search')
-api.add_resource(views.Home, '/')
+from catalog_api.app import db, create_app
+import catalog_api.models
+from catalog_api.config import ProdConfiguration
 
 
 if __name__ == '__main__':
-    db.create_all()
+    app = create_app(ProdConfiguration)
+    with app.app_context():
+        db.create_all()
     app.run()
