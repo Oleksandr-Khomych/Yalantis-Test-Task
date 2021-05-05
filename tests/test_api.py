@@ -1,6 +1,7 @@
 import json
 import pytest
 
+
 data = [({'name': 'Course1', 'start_date': '2018-01-01', 'end_date': '2020-01-01', 'lectures_count': -100},
          400,
          'lectures_count',
