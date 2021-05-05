@@ -36,8 +36,10 @@ your preferred browser.
 ```
 
 ## Actions
-###- GET /
-###- POST /create
+
+### - GET /
+
+### - POST /create
   
 Field | Type
 ------------ | -------------
@@ -47,9 +49,11 @@ Field | Type
 ***lectures_count*** | **reqired**, integer number greater than zero
 **The parameter start_date must be less than end_date**
 
-###- GET /catalog
-###- GET /course/{***course_id***}
-###- PATCH /course/{***course_id***}
+### - GET /catalog
+
+### - GET /course/{***course_id***}
+
+### - PATCH /course/{***course_id***}
   
 Field | Type
 ------------ | -------------
@@ -61,8 +65,9 @@ Field | Type
 
 **The parameter start_date must be less than end_date**
 
-###- DELETE /course/{***course_id***}
-###- GET /search
+### - DELETE /course/{***course_id***}
+
+### - GET /search
 Field | Type
 ------------ | -------------
 ***name*** | **reqired**, str
