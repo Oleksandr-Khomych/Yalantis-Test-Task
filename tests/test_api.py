@@ -92,6 +92,14 @@ def test_create_course(test_client, d):
     assert response['message']['lectures_count'] == d['lectures_count']
 
 
+@pytest.mark.parametrize("course_id", [-1, 0, 99999, 'text'])
+def test_course_info_incorrect_data(test_client, course_id):
+    response = test_client.get(f'/course/{course_id}')
+    data = json.loads(response.get_data(as_text=True))
+    assert response.status_code == 404
+    assert data['message'] == f"Course {course_id} doesn't exist!"
+
+
 def test_home_page(test_client):
     response = test_client.get('/')
     data = json.loads(response.get_data(as_text=True))

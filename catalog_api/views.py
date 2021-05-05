@@ -34,13 +34,11 @@ class Catalog(Resource):
 
 class Course(Resource):
     def get(self, course_id):
+        abort_if_course_doesnt_exist(course_id)
         course = db_methods.get_course_by_id(course_id)
-        if course:
-            course_info = {'id': course.id, 'name': course.name, 'start_date': str(course.start_date),
-                           'end_date': str(course.end_date), 'lectures_count': course.lectures_count}
-            return {"message": {"course": course_info}}, 200
-        else:
-            return {"message": {"course": f"Course with id={course_id} not found"}}, 400
+        course_info = {'id': course.id, 'name': course.name, 'start_date': str(course.start_date),
+                       'end_date': str(course.end_date), 'lectures_count': course.lectures_count}
+        return {"message": {"course": course_info}}, 200
 
     def delete(self, course_id):
         abort_if_course_doesnt_exist(course_id)
