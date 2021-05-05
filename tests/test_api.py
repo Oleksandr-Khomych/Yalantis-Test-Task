@@ -55,7 +55,21 @@ data = [({'name': 'Course1', 'start_date': '2018-01-01', 'end_date': '2020-01-01
          'Missing required parameter in the JSON body or the post body or the query '
          'string'
          ),
+
+        ({},
+         400,
+         'name',
+         'Missing required parameter in the JSON body or the post body or the query string')
         ]
+
+
+create_course_corect_data = [
+    ({'name': 'Course1', 'start_date': '2018-01-01', 'end_date': '2018-01-30', 'lectures_count': 30}),
+    ({'name': 'Course2', 'start_date': '2019-04-20', 'end_date': '2022-04-30', 'lectures_count': 10}),
+    ({'name': 'Course3', 'start_date': '2020-01-20', 'end_date': '2022-04-02', 'lectures_count': 50}),
+    ({'name': 'Course4', 'start_date': '2021-04-20', 'end_date': '2022-04-27', 'lectures_count': 74}),
+    ({'name': 'Course5', 'start_date': '2021-05-05', 'end_date': '2022-05-15', 'lectures_count': 10})
+]
 
 
 @pytest.mark.parametrize("data, expected_status_code, key_in_response, expected_response", data)
@@ -64,6 +78,18 @@ def test_create_course_incorrect_data(test_client, data, expected_status_code, k
     response = json.loads(r.get_data(as_text=True))
     assert r.status_code == expected_status_code
     assert response['message'][key_in_response] == expected_response
+
+
+@pytest.mark.parametrize("d", create_course_corect_data)
+def test_create_course(test_client, d):
+    r = test_client.post('/create', data=d)
+    response = json.loads(r.get_data(as_text=True))
+    assert r.status_code == 201
+    assert 'id' in response['message']
+    assert response['message']['name'] == d['name']
+    assert response['message']['start_date'] == d['start_date']
+    assert response['message']['end_date'] == d['end_date']
+    assert response['message']['lectures_count'] == d['lectures_count']
 
 
 def test_home_page(test_client):
