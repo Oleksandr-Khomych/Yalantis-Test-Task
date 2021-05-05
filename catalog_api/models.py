@@ -1,4 +1,4 @@
-from catalog_api.app import db
+from app import db
 
 
 class Course(db.Model):

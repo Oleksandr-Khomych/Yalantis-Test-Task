@@ -1,7 +1,7 @@
 import datetime
 from flask_restful import abort
 
-from catalog_api.db_methods import course_exists
+from db_methods import course_exists
 
 
 def transfer_date(raw_date: str) -> datetime.date:

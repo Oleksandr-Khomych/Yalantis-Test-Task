@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from catalog_api.app import db, create_app
-import catalog_api.models
-from catalog_api.config import ProdConfiguration
+from app import db, create_app
+import models
+from config import ProdConfiguration
 
 
 if __name__ == '__main__':

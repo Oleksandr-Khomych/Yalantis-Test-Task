@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 
-from catalog_api import db_methods
-from catalog_api.utils import transfer_date, validate_lectures_count, abort_if_course_doesnt_exist, validate_dates
+import db_methods
+from utils import transfer_date, validate_lectures_count, abort_if_course_doesnt_exist, validate_dates
 
 
 class Home(Resource):
