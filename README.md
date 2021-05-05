@@ -50,3 +50,5 @@ your preferred browser.
 ```
 http://ec2-18-219-122-41.us-east-2.compute.amazonaws.com:8001/
 ```
+
+It is even allowed to click:)
