@@ -36,14 +36,40 @@ your preferred browser.
 ```
 
 ## Actions
-- GET /
-- POST /create
-- GET /catalog
-- GET /course/{course_id}
-- PATCH /course/{course_id}
-- DELETE /course/{course_id}
-- GET /search
+###- GET /
+###- POST /create
+  
+Field | Type
+------------ | -------------
+***name*** | **reqired**, str
+***start_date*** | **reqired**, date('%Y-%m-%d'), example "2020-04-20"
+***end_date*** | **reqired**, date('%Y-%m-%d'), example "2021-05-30"
+***lectures_count*** | **reqired**, integer number greater than zero
+**The parameter start_date must be less than end_date**
 
+###- GET /catalog
+###- GET /course/{***course_id***}
+###- PATCH /course/{***course_id***}
+  
+Field | Type
+------------ | -------------
+***name*** | **optional**, str
+***start_date*** | **optional**, date('%Y-%m-%d'), example "2020-04-20"
+***end_date*** | **optional**, date('%Y-%m-%d'), example "2021-05-30"
+***lectures_count*** | **optional**, integer number greater than zero
+**There must be at least one argument for a successful query**
+
+**The parameter start_date must be less than end_date**
+
+###- DELETE /course/{***course_id***}
+###- GET /search
+Field | Type
+------------ | -------------
+***name*** | **reqired**, str
+***start_date[gte]*** | **optional**, date('%Y-%m-%d'), example "2020-04-20"
+***start_date[lte]*** | **optional**, date('%Y-%m-%d'), example "2021-05-30"
+***end_date[gte]*** | **optional**, date('%Y-%m-%d'), example "2020-04-20"
+***end_date[lte]*** | **optional**, date('%Y-%m-%d'), example "2021-05-30"
 
 ## Host on AWS
 
