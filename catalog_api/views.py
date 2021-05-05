@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 
 from catalog_api import db_methods
-from catalog_api.utils import transfer_date, validate_lectures_count, abort_if_course_doesnt_exist
+from catalog_api.utils import transfer_date, validate_lectures_count, abort_if_course_doesnt_exist, validate_dates
 
 
 class Home(Resource):
@@ -17,6 +17,7 @@ class CreateCourse(Resource):
         parser.add_argument('end_date', type=transfer_date, required=True)
         parser.add_argument('lectures_count', type=validate_lectures_count, required=True)
         args = parser.parse_args(strict=True)
+        validate_dates(args["start_date"], args["end_date"])
         id_ = db_methods.add_course(args['name'], args['start_date'], args['end_date'], args['lectures_count'])
         return {"message": {'id': id_, 'name': args['name'], 'start_date': str(args['start_date']),
                             'end_date': str(args['end_date']), 'lectures_count': args['lectures_count']}}, 201
@@ -60,6 +61,16 @@ class Course(Resource):
                 update_data[key] = value
         if len(update_data) == 0:
             return {"message": {"patch": "No arguments passed"}}, 400
+        # --- ValidateDates
+        start_date = args['start_date']
+        end_date = args['end_date']
+        course = db_methods.get_course_by_id(course_id)
+        if start_date is None:
+            start_date = course.start_date
+        if end_date is None:
+            end_date = course.end_date
+        validate_dates(start_date, end_date)
+
         db_methods.update_course_info(course_id, update_data)
         course = db_methods.get_course_by_id(course_id)
         course_info = {'id': course.id, 'name': course.name, 'start_date': str(course.start_date),

@@ -25,6 +25,11 @@ def validate_lectures_count(value, name):
     return value
 
 
+def validate_dates(start_date, end_date):
+    if start_date > end_date:
+        abort(400, message={"message": {'date': f"The parameter start_date must be less than end_date"}})
+
+
 def abort_if_course_doesnt_exist(course_id):
     if not course_exists(course_id):
         abort(404, message=f"Course {course_id} doesn't exist!")

@@ -45,3 +45,8 @@ def find_courses(filters: dict):
     if filters['end_date[lte]']:
         q = q.filter(Course.end_date <= filters['end_date[lte]'])
     return q.all()
+
+
+def delete_all_course():
+    db.session.query(Course).delete()
+    db.session.commit()
