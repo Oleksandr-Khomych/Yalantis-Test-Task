@@ -12,7 +12,7 @@ def create_app(Configuration):
     db.init_app(app)
     api = Api(app)
 
-    import catalog_api.views as views
+    import views as views
     api.add_resource(views.CreateCourse, '/create')
     api.add_resource(views.Catalog, '/catalog')
     api.add_resource(views.Course, '/course/<string:course_id>')

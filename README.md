@@ -6,7 +6,7 @@
 - [Flask](https://flask.palletsprojects.com/en/1.1.x/)
 - [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/)
 - [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/)
-- [python-dotenv](https://pypi.org/project/python-dotenv/)
+- [python-dotenv](https://pypi.org/project/python-dotenv/) - for production
 - [pytest](https://docs.pytest.org/en/6.2.x/contents.html) - for tests
 
 ## Installation
@@ -43,3 +43,10 @@ your preferred browser.
 - PATCH /course/{course_id}
 - DELETE /course/{course_id}
 - GET /search
+
+
+## Host on AWS
+
+```
+http://ec2-18-219-122-41.us-east-2.compute.amazonaws.com:8001/
+```
